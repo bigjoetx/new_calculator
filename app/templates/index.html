@@ -12,11 +12,13 @@
     <!-- Tab bar -->
     <div class="tabs">
       <button class="tab tab--active" data-tab="mortgage">Mortgage</button>
-      <button class="tab" data-tab="loan">Loan</button>
+      <button class="tab" data-tab="loan">Basic Loan</button>
       <button class="tab" data-tab="electric">Electricity</button>
       <button class="tab" data-tab="fuel">Fuel Mileage</button>
-      <button class="tab" data-tab="pay">Take Home Pay</button>
-      <button class="tab" data-tab="raise">Raise</button>
+      <button class="tab" data-tab="pay">Pay</button>
+      <button class="tab" data-tab="raise">Pay Raise</button>
+      <button class="tab" data-tab="taxes">Federal Tax Yearly</button>
+      <button class="tab" data-tab="paytax">Federal Tax Per Check</button>
     </div>
 
     <!-- ── Mortgage Calculator ────────────────────────────── -->
@@ -551,6 +553,290 @@
       </div>
     </div>
 
+    <!-- ── Federal Tax Calculator ──────────────────────────── -->
+    <div class="panel" id="tab-taxes">
+      <div class="form-grid">
+
+        <div class="row-2">
+          <div class="field">
+            <label for="taxFiling">Filing Status</label>
+            <select id="taxFiling" class="calc-select">
+              <option value="single">Single</option>
+              <option value="mfj">Married Filing Jointly</option>
+              <option value="mfs">Married Filing Separately</option>
+              <option value="hoh">Head of Household</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="taxWithheld">Federal Withheld (YTD)</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input type="number" id="taxWithheld" placeholder="0" min="0" />
+            </div>
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="field">
+            <label for="taxIncome1">Your Annual Income</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input type="number" id="taxIncome1" placeholder="75,000" min="0" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="taxIncome2">2nd Income <span class="label-optional">(optional)</span></label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input type="number" id="taxIncome2" placeholder="0" min="0" />
+            </div>
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="field">
+            <label>Deductions</label>
+            <div class="input-toggle-row">
+              <div class="input-prefix" style="flex:1;min-width:0">
+                <span>$</span>
+                <input type="number" id="taxDeductions" placeholder="15,000" min="0" readonly />
+              </div>
+              <div class="toggle-group" id="taxDedToggle">
+                <button class="toggle-btn toggle-btn--active" data-mode="standard">Std</button>
+                <button class="toggle-btn" data-mode="itemized">Item.</button>
+              </div>
+            </div>
+            <div class="field-hint" id="taxDedHint">Loading tax data…</div>
+          </div>
+          <div class="field">
+            <label for="taxCredits">Tax Credits</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input type="number" id="taxCredits" placeholder="0" min="0" />
+            </div>
+            <div class="field-hint">Dollar-for-dollar reduction of tax owed</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="results" id="taxResults" style="display:none">
+        <div class="result-row">
+          <span>Gross Income</span>
+          <span id="tr-gross">—</span>
+        </div>
+        <div class="result-row">
+          <span id="tr-ded-label">Standard Deduction</span>
+          <span id="tr-ded">—</span>
+        </div>
+        <div class="result-row">
+          <span>Taxable Income</span>
+          <span id="tr-taxable">—</span>
+        </div>
+        <div class="result-row">
+          <span>Tax Liability</span>
+          <span id="tr-liability">—</span>
+        </div>
+        <div class="result-row" id="tr-credits-row" style="display:none">
+          <span>Credits Applied</span>
+          <span id="tr-credits">—</span>
+        </div>
+        <div class="result-row">
+          <span>Tax After Credits</span>
+          <span id="tr-after-credits">—</span>
+        </div>
+        <div class="result-row">
+          <span>Total Withheld</span>
+          <span id="tr-withheld">—</span>
+        </div>
+        <div class="result-row result-row--total" id="tr-result-row">
+          <span id="tr-result-label">Estimated Refund</span>
+          <span id="tr-result">—</span>
+        </div>
+        <div class="result-row result-meta">
+          <span>Effective Rate</span>
+          <span id="tr-effective-rate">—</span>
+        </div>
+        <div class="result-row result-meta">
+          <span>Marginal Rate</span>
+          <span id="tr-marginal">—</span>
+        </div>
+      </div>
+
+      <div class="pay-bonus-wrap" id="taxBracketWrap" style="display:none">
+        <div class="pay-section-head">Bracket Breakdown</div>
+        <div style="margin-top:12px">
+          <table class="fuel-table">
+            <thead>
+              <tr>
+                <th>Rate</th>
+                <th>Range</th>
+                <th>Taxable</th>
+                <th>Tax</th>
+              </tr>
+            </thead>
+            <tbody id="taxBracketBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Paycheck Tax Estimator ────────────────────────────── -->
+    <div class="panel" id="tab-paytax">
+      <div class="form-grid">
+
+        <div class="field">
+          <label for="ptFiling">Filing Status</label>
+          <select id="ptFiling" class="calc-select">
+            <option value="single">Single</option>
+            <option value="mfj">Married Filing Jointly</option>
+            <option value="mfs">Married Filing Separately</option>
+            <option value="hoh">Head of Household</option>
+          </select>
+        </div>
+
+        <div class="pay-section-head" style="margin-top:4px">Paycheck 1</div>
+        <div class="row-2">
+          <div class="field">
+            <label for="ptGross1">Gross Pay / Check</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input type="number" id="ptGross1" placeholder="2,500" min="0" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="ptWith1">Fed. Withheld / Check</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input type="number" id="ptWith1" placeholder="0" min="0" />
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="ptFreq1">Pay Frequency</label>
+          <select id="ptFreq1" class="calc-select">
+            <option value="26">Bi-Weekly (26× / yr)</option>
+            <option value="24">Semi-Monthly (24× / yr)</option>
+          </select>
+        </div>
+
+        <div class="pay-section-head" style="margin-top:4px">Paycheck 2 <span class="label-optional">(optional)</span></div>
+        <div class="row-2">
+          <div class="field">
+            <label for="ptGross2">Gross Pay / Check</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input type="number" id="ptGross2" placeholder="0" min="0" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="ptWith2">Fed. Withheld / Check</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input type="number" id="ptWith2" placeholder="0" min="0" />
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="ptFreq2">Pay Frequency</label>
+          <select id="ptFreq2" class="calc-select">
+            <option value="26">Bi-Weekly (26× / yr)</option>
+            <option value="24">Semi-Monthly (24× / yr)</option>
+          </select>
+        </div>
+
+        <div class="row-2">
+          <div class="field">
+            <label>Deductions</label>
+            <div class="input-toggle-row">
+              <div class="input-prefix" style="flex:1;min-width:0">
+                <span>$</span>
+                <input type="number" id="ptDeductions" placeholder="15,000" min="0" readonly />
+              </div>
+              <div class="toggle-group" id="ptDedToggle">
+                <button class="toggle-btn toggle-btn--active" data-mode="standard">Std</button>
+                <button class="toggle-btn" data-mode="itemized">Item.</button>
+              </div>
+            </div>
+            <div class="field-hint" id="ptDedHint">Loading…</div>
+          </div>
+          <div class="field">
+            <label for="ptCredits">Tax Credits</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input type="number" id="ptCredits" placeholder="0" min="0" />
+            </div>
+            <div class="field-hint">Dollar-for-dollar reduction</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="results" id="ptResults" style="display:none">
+        <div class="result-row result-meta">
+          <span id="pt-periods-label">Annualized at</span>
+          <span id="pt-periods">26 pay periods</span>
+        </div>
+        <div class="result-row">
+          <span>Annual Gross Income</span>
+          <span id="pt-gross">—</span>
+        </div>
+        <div class="result-row">
+          <span>Annual Fed. Withheld</span>
+          <span id="pt-withheld">—</span>
+        </div>
+        <div class="result-row">
+          <span id="pt-ded-label">Standard Deduction</span>
+          <span id="pt-ded">—</span>
+        </div>
+        <div class="result-row">
+          <span>Taxable Income</span>
+          <span id="pt-taxable">—</span>
+        </div>
+        <div class="result-row">
+          <span>Tax Liability</span>
+          <span id="pt-liability">—</span>
+        </div>
+        <div class="result-row" id="pt-credits-row" style="display:none">
+          <span>Credits Applied</span>
+          <span id="pt-credits">—</span>
+        </div>
+        <div class="result-row">
+          <span>Tax After Credits</span>
+          <span id="pt-after-credits">—</span>
+        </div>
+        <div class="result-row result-row--total" id="pt-result-row">
+          <span id="pt-result-label">Estimated Refund</span>
+          <span id="pt-result">—</span>
+        </div>
+        <div class="result-row result-meta">
+          <span>Effective Rate</span>
+          <span id="pt-effective-rate">—</span>
+        </div>
+        <div class="result-row result-meta">
+          <span>Marginal Rate</span>
+          <span id="pt-marginal">—</span>
+        </div>
+      </div>
+
+      <div class="pay-bonus-wrap" id="ptBracketWrap" style="display:none">
+        <div class="pay-section-head">Bracket Breakdown</div>
+        <div style="margin-top:12px">
+          <table class="fuel-table">
+            <thead>
+              <tr>
+                <th>Rate</th>
+                <th>Range</th>
+                <th>Taxable</th>
+                <th>Tax</th>
+              </tr>
+            </thead>
+            <tbody id="ptBracketBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -567,7 +853,7 @@
     // ── Generic toggle setup ───────────────────────────────────
     const modes = {
       downToggle: 'dollar', taxToggle: 'dollar', insToggle: 'dollar',
-      loanDownToggle: 'dollar', loanTermToggle: 'months'
+      loanDownToggle: 'dollar', loanTermToggle: 'months', taxDedToggle: 'standard', ptDedToggle: 'standard'
     };
 
     function setupToggle(groupId, onchange) {
@@ -590,13 +876,15 @@
       calcMortgage();
     });
     setupToggle('taxToggle', () => {
-      document.getElementById('taxSymbol').textContent =
-        modes.taxToggle === 'dollar' ? '$' : '%';
+      const isPct = modes.taxToggle === 'percent';
+      document.getElementById('taxSymbol').textContent = isPct ? '%' : '$';
+      document.getElementById('taxes').placeholder = isPct ? '1.50' : '5,000';
       calcMortgage();
     });
     setupToggle('insToggle', () => {
-      document.getElementById('insSymbol').textContent =
-        modes.insToggle === 'dollar' ? '$' : '%';
+      const isPct = modes.insToggle === 'percent';
+      document.getElementById('insSymbol').textContent = isPct ? '%' : '$';
+      document.getElementById('insurance').placeholder = isPct ? '0.50' : '1,500';
       calcMortgage();
     });
 
@@ -901,6 +1189,308 @@
 
     ['raiseSalary','raisePct','raiseTakeHome','avgRaisePct']
       .forEach(id => document.getElementById(id).addEventListener('input', calcRaise));
+
+    // ── Federal Tax ────────────────────────────────────────────
+    let taxData = { brackets: {}, stdDed: {} };
+
+    async function loadTaxData() {
+      try {
+        const [bRes, dRes] = await Promise.all([
+          fetch('/static/tax_brackets.csv'),
+          fetch('/static/standard_deductions.csv')
+        ]);
+        const bText = await bRes.text();
+        const dText = await dRes.text();
+
+        bText.trim().split('\n').slice(1).forEach(line => {
+          const [status, rate, from, to] = line.split(',');
+          if (!taxData.brackets[status]) taxData.brackets[status] = [];
+          taxData.brackets[status].push({
+            rate: parseFloat(rate),
+            from: parseFloat(from),
+            to:   parseFloat(to)
+          });
+        });
+
+        dText.trim().split('\n').slice(1).forEach(line => {
+          const [status, amount] = line.split(',');
+          taxData.stdDed[status.trim()] = parseFloat(amount);
+        });
+
+        const filing = document.getElementById('taxFiling').value;
+        if (modes.taxDedToggle === 'standard') {
+          document.getElementById('taxDeductions').value = taxData.stdDed[filing] || '';
+        }
+        updateTaxDedHint();
+        calcTax();
+
+        const ptFiling = document.getElementById('ptFiling').value;
+        if (modes.ptDedToggle === 'standard') {
+          document.getElementById('ptDeductions').value = taxData.stdDed[ptFiling] || '';
+        }
+        updatePtDedHint();
+      } catch (e) {
+        console.error('Failed to load tax data:', e);
+        document.getElementById('taxDedHint').textContent = 'Error loading tax data.';
+      }
+    }
+
+    function updateTaxDedHint() {
+      const filing = document.getElementById('taxFiling').value;
+      const labels = { single: 'Single', mfj: 'Married Filing Jointly', mfs: 'Married Filing Separately', hoh: 'Head of Household' };
+      const stdDed = taxData.stdDed[filing] || 0;
+      document.getElementById('taxDedHint').textContent = modes.taxDedToggle === 'standard'
+        ? `2025 standard deduction for ${labels[filing]}: ${fmtK(stdDed)}`
+        : 'Enter your total itemized deductions';
+    }
+
+    function calcTax() {
+      const filing   = document.getElementById('taxFiling').value;
+      const income1  = parseFloat(document.getElementById('taxIncome1').value)  || 0;
+      const income2  = parseFloat(document.getElementById('taxIncome2').value)  || 0;
+      const credits  = parseFloat(document.getElementById('taxCredits').value)  || 0;
+      const withheld = parseFloat(document.getElementById('taxWithheld').value) || 0;
+      const gross    = income1 + income2;
+
+      if (gross <= 0 || !taxData.brackets[filing]) {
+        document.getElementById('taxResults').style.display     = 'none';
+        document.getElementById('taxBracketWrap').style.display = 'none';
+        return;
+      }
+
+      const stdDed    = taxData.stdDed[filing] || 0;
+      const deduction = modes.taxDedToggle === 'standard'
+        ? stdDed
+        : (parseFloat(document.getElementById('taxDeductions').value) || 0);
+      const taxable   = Math.max(gross - deduction, 0);
+
+      const brackets  = taxData.brackets[filing];
+      let liability   = 0;
+      const breakdown = [];
+
+      brackets.forEach(b => {
+        const inBkt = Math.max(Math.min(taxable, b.to) - b.from, 0);
+        const tax   = inBkt * (b.rate / 100);
+        liability  += tax;
+        if (inBkt > 0) breakdown.push({ rate: b.rate, from: b.from, to: b.to, taxable: inBkt, tax });
+      });
+
+      const creditsApplied = Math.min(credits, liability);
+      const afterCredits   = Math.max(liability - credits, 0);
+      const refund         = withheld - afterCredits;
+      const effectiveRate  = gross > 0 ? (afterCredits / gross) * 100 : 0;
+      const marginalRate   = brackets.reduce((r, b) => taxable >= b.from ? b.rate : r, 0);
+
+      document.getElementById('taxResults').style.display     = '';
+      document.getElementById('taxBracketWrap').style.display = '';
+
+      document.getElementById('tr-gross').textContent         = fmtK(gross);
+      document.getElementById('tr-ded-label').textContent     = modes.taxDedToggle === 'standard' ? 'Standard Deduction' : 'Itemized Deduction';
+      document.getElementById('tr-ded').textContent           = '(' + fmtK(deduction) + ')';
+      document.getElementById('tr-taxable').textContent       = fmtK(taxable);
+      document.getElementById('tr-liability').textContent     = fmt(liability);
+
+      const credRow = document.getElementById('tr-credits-row');
+      credRow.style.display = credits > 0 ? '' : 'none';
+      document.getElementById('tr-credits').textContent       = '(' + fmt(creditsApplied) + ')';
+      document.getElementById('tr-after-credits').textContent = fmt(afterCredits);
+      document.getElementById('tr-withheld').textContent      = withheld > 0 ? fmt(withheld) : '—';
+
+      const resultRow   = document.getElementById('tr-result-row');
+      const resultLabel = document.getElementById('tr-result-label');
+      const resultVal   = document.getElementById('tr-result');
+
+      if (refund >= 0) {
+        resultLabel.textContent   = 'Estimated Refund';
+        resultVal.textContent     = fmt(refund);
+        resultRow.classList.remove('result-row--owed');
+        resultRow.classList.add('result-row--total');
+      } else {
+        resultLabel.textContent   = 'Estimated Amount Owed';
+        resultVal.textContent     = fmt(Math.abs(refund));
+        resultRow.classList.remove('result-row--total');
+        resultRow.classList.add('result-row--owed');
+      }
+
+      document.getElementById('tr-effective-rate').textContent = effectiveRate.toFixed(2) + '%';
+      document.getElementById('tr-marginal').textContent       = marginalRate + '%';
+
+      const tbody = document.getElementById('taxBracketBody');
+      tbody.innerHTML = '';
+      breakdown.forEach(b => {
+        const toStr = b.to >= 9e8 ? '+' : ' – ' + fmtK(b.to);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${b.rate}%</td>
+          <td>${fmtK(b.from)}${toStr}</td>
+          <td>${fmtK(b.taxable)}</td>
+          <td>${fmt(b.tax)}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    setupToggle('taxDedToggle', mode => {
+      const filing   = document.getElementById('taxFiling').value;
+      const dedInput = document.getElementById('taxDeductions');
+      if (mode === 'standard') {
+        dedInput.value    = taxData.stdDed[filing] || '';
+        dedInput.readOnly = true;
+      } else {
+        dedInput.value       = '';
+        dedInput.readOnly    = false;
+        dedInput.placeholder = 'Enter amount';
+      }
+      updateTaxDedHint();
+      calcTax();
+    });
+
+    document.getElementById('taxFiling').addEventListener('change', () => {
+      if (modes.taxDedToggle === 'standard') {
+        const filing = document.getElementById('taxFiling').value;
+        document.getElementById('taxDeductions').value = taxData.stdDed[filing] || '';
+      }
+      updateTaxDedHint();
+      calcTax();
+    });
+
+    ['taxIncome1','taxIncome2','taxCredits','taxWithheld','taxDeductions']
+      .forEach(id => document.getElementById(id).addEventListener('input', calcTax));
+
+    // ── Paycheck Tax Estimator ─────────────────────────────────
+    const filingLabels = { single: 'Single', mfj: 'Married Filing Jointly', mfs: 'Married Filing Separately', hoh: 'Head of Household' };
+
+    function updatePtDedHint() {
+      const filing = document.getElementById('ptFiling').value;
+      const stdDed = taxData.stdDed[filing] || 0;
+      document.getElementById('ptDedHint').textContent = modes.ptDedToggle === 'standard'
+        ? `2025 standard deduction for ${filingLabels[filing]}: ${fmtK(stdDed)}`
+        : 'Enter your total itemized deductions';
+    }
+
+    function calcPaycheckTax() {
+      const filing  = document.getElementById('ptFiling').value;
+      const periods1 = parseInt(document.getElementById('ptFreq1').value);
+      const periods2 = parseInt(document.getElementById('ptFreq2').value);
+      const gross1   = parseFloat(document.getElementById('ptGross1').value) || 0;
+      const with1    = parseFloat(document.getElementById('ptWith1').value)  || 0;
+      const gross2   = parseFloat(document.getElementById('ptGross2').value) || 0;
+      const with2    = parseFloat(document.getElementById('ptWith2').value)  || 0;
+      const credits  = parseFloat(document.getElementById('ptCredits').value) || 0;
+
+      const annualGross    = gross1 * periods1 + gross2 * periods2;
+      const annualWithheld = with1  * periods1 + with2  * periods2;
+
+      if (annualGross <= 0 || !taxData.brackets[filing]) {
+        document.getElementById('ptResults').style.display     = 'none';
+        document.getElementById('ptBracketWrap').style.display = 'none';
+        return;
+      }
+
+      const stdDed    = taxData.stdDed[filing] || 0;
+      const deduction = modes.ptDedToggle === 'standard'
+        ? stdDed
+        : (parseFloat(document.getElementById('ptDeductions').value) || 0);
+      const taxable   = Math.max(annualGross - deduction, 0);
+
+      const brackets  = taxData.brackets[filing];
+      let liability   = 0;
+      const breakdown = [];
+
+      brackets.forEach(b => {
+        const inBkt = Math.max(Math.min(taxable, b.to) - b.from, 0);
+        const tax   = inBkt * (b.rate / 100);
+        liability  += tax;
+        if (inBkt > 0) breakdown.push({ rate: b.rate, from: b.from, to: b.to, taxable: inBkt, tax });
+      });
+
+      const creditsApplied = Math.min(credits, liability);
+      const afterCredits   = Math.max(liability - credits, 0);
+      const refund         = annualWithheld - afterCredits;
+      const effectiveRate  = annualGross > 0 ? (afterCredits / annualGross) * 100 : 0;
+      const marginalRate   = brackets.reduce((r, b) => taxable >= b.from ? b.rate : r, 0);
+
+      document.getElementById('ptResults').style.display     = '';
+      document.getElementById('ptBracketWrap').style.display = '';
+
+      const periodsLabel = gross2 > 0 && periods1 !== periods2
+        ? `${periods1}× + ${periods2}× pay periods`
+        : `${periods1} pay periods`;
+      document.getElementById('pt-periods').textContent = periodsLabel;
+      document.getElementById('pt-gross').textContent        = fmtK(annualGross);
+      document.getElementById('pt-withheld').textContent     = annualWithheld > 0 ? fmt(annualWithheld) : '—';
+      document.getElementById('pt-ded-label').textContent    = modes.ptDedToggle === 'standard' ? 'Standard Deduction' : 'Itemized Deduction';
+      document.getElementById('pt-ded').textContent          = '(' + fmtK(deduction) + ')';
+      document.getElementById('pt-taxable').textContent      = fmtK(taxable);
+      document.getElementById('pt-liability').textContent    = fmt(liability);
+
+      const credRow = document.getElementById('pt-credits-row');
+      credRow.style.display = credits > 0 ? '' : 'none';
+      document.getElementById('pt-credits').textContent      = '(' + fmt(creditsApplied) + ')';
+      document.getElementById('pt-after-credits').textContent = fmt(afterCredits);
+
+      const resultRow   = document.getElementById('pt-result-row');
+      const resultLabel = document.getElementById('pt-result-label');
+      const resultVal   = document.getElementById('pt-result');
+
+      if (refund >= 0) {
+        resultLabel.textContent = 'Estimated Refund';
+        resultVal.textContent   = fmt(refund);
+        resultRow.classList.remove('result-row--owed');
+        resultRow.classList.add('result-row--total');
+      } else {
+        resultLabel.textContent = 'Estimated Amount Owed';
+        resultVal.textContent   = fmt(Math.abs(refund));
+        resultRow.classList.remove('result-row--total');
+        resultRow.classList.add('result-row--owed');
+      }
+
+      document.getElementById('pt-effective-rate').textContent = effectiveRate.toFixed(2) + '%';
+      document.getElementById('pt-marginal').textContent       = marginalRate + '%';
+
+      const tbody = document.getElementById('ptBracketBody');
+      tbody.innerHTML = '';
+      breakdown.forEach(b => {
+        const toStr = b.to >= 9e8 ? '+' : ' – ' + fmtK(b.to);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${b.rate}%</td>
+          <td>${fmtK(b.from)}${toStr}</td>
+          <td>${fmtK(b.taxable)}</td>
+          <td>${fmt(b.tax)}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    setupToggle('ptDedToggle', mode => {
+      const filing   = document.getElementById('ptFiling').value;
+      const dedInput = document.getElementById('ptDeductions');
+      if (mode === 'standard') {
+        dedInput.value    = taxData.stdDed[filing] || '';
+        dedInput.readOnly = true;
+      } else {
+        dedInput.value       = '';
+        dedInput.readOnly    = false;
+        dedInput.placeholder = 'Enter amount';
+      }
+      updatePtDedHint();
+      calcPaycheckTax();
+    });
+
+    document.getElementById('ptFiling').addEventListener('change', () => {
+      if (modes.ptDedToggle === 'standard') {
+        document.getElementById('ptDeductions').value = taxData.stdDed[document.getElementById('ptFiling').value] || '';
+      }
+      updatePtDedHint();
+      calcPaycheckTax();
+    });
+
+    document.getElementById('ptFreq1').addEventListener('change', calcPaycheckTax);
+    document.getElementById('ptFreq2').addEventListener('change', calcPaycheckTax);
+
+    ['ptGross1','ptWith1','ptGross2','ptWith2','ptCredits','ptDeductions']
+      .forEach(id => document.getElementById(id).addEventListener('input', calcPaycheckTax));
+
+    loadTaxData();
   </script>
 </body>
 </html>
