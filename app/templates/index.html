@@ -7,93 +7,900 @@
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <div class="calculator">
-    <div class="display">
-      <div class="display__expression" id="expression"></div>
-      <div class="display__result" id="result">0</div>
+  <div class="app">
+
+    <!-- Tab bar -->
+    <div class="tabs">
+      <button class="tab tab--active" data-tab="mortgage">Mortgage</button>
+      <button class="tab" data-tab="loan">Loan</button>
+      <button class="tab" data-tab="electric">Electricity</button>
+      <button class="tab" data-tab="fuel">Fuel Mileage</button>
+      <button class="tab" data-tab="pay">Take Home Pay</button>
+      <button class="tab" data-tab="raise">Raise</button>
     </div>
-    <div class="keypad">
-      <button class="btn btn--wide btn--secondary" data-action="clear">AC</button>
-      <button class="btn btn--secondary" data-action="sign">+/−</button>
-      <button class="btn btn--secondary" data-action="percent">%</button>
-      <button class="btn btn--operator" data-action="operator" data-value="/">÷</button>
 
-      <button class="btn" data-action="number" data-value="7">7</button>
-      <button class="btn" data-action="number" data-value="8">8</button>
-      <button class="btn" data-action="number" data-value="9">9</button>
-      <button class="btn btn--operator" data-action="operator" data-value="*">×</button>
+    <!-- ── Mortgage Calculator ────────────────────────────── -->
+    <div class="panel panel--active" id="tab-mortgage">
+      <div class="form-grid">
 
-      <button class="btn" data-action="number" data-value="4">4</button>
-      <button class="btn" data-action="number" data-value="5">5</button>
-      <button class="btn" data-action="number" data-value="6">6</button>
-      <button class="btn btn--operator" data-action="operator" data-value="-">−</button>
+        <div class="row-2">
+          <div class="field">
+            <label for="homePrice">Home Price</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input type="number" id="homePrice" placeholder="400,000" min="0" />
+            </div>
+          </div>
 
-      <button class="btn" data-action="number" data-value="1">1</button>
-      <button class="btn" data-action="number" data-value="2">2</button>
-      <button class="btn" data-action="number" data-value="3">3</button>
-      <button class="btn btn--operator" data-action="operator" data-value="+">+</button>
+          <div class="field">
+            <label for="downPayment">Down Payment</label>
+            <div class="input-toggle-row">
+              <div class="input-prefix">
+                <span id="downSymbol">$</span>
+                <input type="number" id="downPayment" placeholder="80,000" min="0" />
+              </div>
+              <div class="toggle-group" id="downToggle">
+                <button class="toggle-btn toggle-btn--active" data-mode="dollar">$</button>
+                <button class="toggle-btn" data-mode="percent">%</button>
+              </div>
+            </div>
+            <div class="field-hint" id="downHint"></div>
+          </div>
+        </div>
 
-      <button class="btn btn--wide" data-action="number" data-value="0">0</button>
-      <button class="btn" data-action="decimal">.</button>
-      <button class="btn btn--operator btn--equals" data-action="equals">=</button>
+        <div class="row-2">
+          <div class="field">
+            <label for="loanTerm">Loan Term</label>
+            <div class="input-suffix">
+              <input type="number" id="loanTerm" value="30" min="1" max="50" />
+              <span>years</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="interestRate">Interest Rate</label>
+            <div class="input-suffix">
+              <input type="number" id="interestRate" placeholder="6.75" step="0.01" min="0" />
+              <span>%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="taxes">Property Taxes</label>
+          <div class="input-toggle-row">
+            <div class="input-prefix">
+              <span id="taxSymbol">$</span>
+              <input type="number" id="taxes" placeholder="5,000" min="0" />
+            </div>
+            <div class="toggle-group" id="taxToggle">
+              <button class="toggle-btn toggle-btn--active" data-mode="dollar">$/yr</button>
+              <button class="toggle-btn" data-mode="percent">% of price</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="insurance">Homeowners Insurance</label>
+          <div class="input-toggle-row">
+            <div class="input-prefix">
+              <span id="insSymbol">$</span>
+              <input type="number" id="insurance" placeholder="1,200" min="0" />
+            </div>
+            <div class="toggle-group" id="insToggle">
+              <button class="toggle-btn toggle-btn--active" data-mode="dollar">$/yr</button>
+              <button class="toggle-btn" data-mode="percent">% of price</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Mortgage Results -->
+      <div class="results">
+        <div class="result-row">
+          <span>Principal &amp; Interest</span>
+          <span id="r-pi">—</span>
+        </div>
+        <div class="result-row">
+          <span>Property Taxes</span>
+          <span id="r-tax">—</span>
+        </div>
+        <div class="result-row">
+          <span>Homeowners Insurance</span>
+          <span id="r-ins">—</span>
+        </div>
+        <div class="result-row result-row--total">
+          <span>Total Monthly Payment</span>
+          <span id="r-total">—</span>
+        </div>
+        <div class="result-row result-meta">
+          <span>Loan Amount</span>
+          <span id="r-loan">—</span>
+        </div>
+        <div class="result-row result-meta">
+          <span>Total Interest Paid</span>
+          <span id="r-interest">—</span>
+        </div>
+      </div>
     </div>
+
+    <!-- ── Electric Bill Calculator ─────────────────────── -->
+    <div class="panel" id="tab-electric">
+      <div class="form-grid">
+
+        <div class="field">
+          <label for="kwh">Total Usage</label>
+          <div class="input-suffix">
+            <input type="number" id="kwh" placeholder="850" min="0" step="1" />
+            <span>kWh</span>
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="field">
+            <label for="energyRate">Energy Charge</label>
+            <div class="input-group-units">
+              <div class="input-prefix">
+                <span>¢</span>
+                <input type="number" id="energyRate" placeholder="8.50" step="0.001" min="0" />
+              </div>
+              <span class="per-unit">/ kWh</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="deliveryRate">Delivery Charge</label>
+            <div class="input-group-units">
+              <div class="input-prefix">
+                <span>¢</span>
+                <input type="number" id="deliveryRate" placeholder="4.50" step="0.001" min="0" />
+              </div>
+              <span class="per-unit">/ kWh</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="deliveryBase">Delivery Base Charge</label>
+          <div class="input-prefix">
+            <span>$</span>
+            <input type="number" id="deliveryBase" placeholder="12.00" step="0.01" min="0" />
+          </div>
+          <div class="field-hint">Fixed monthly fee added to every bill</div>
+        </div>
+
+      </div>
+
+      <!-- Electric Results -->
+      <div class="results">
+        <div class="result-row">
+          <span>Energy Charge</span>
+          <span id="er-energy">—</span>
+        </div>
+        <div class="result-row">
+          <span>Delivery Charge</span>
+          <span id="er-delivery">—</span>
+        </div>
+        <div class="result-row">
+          <span>Delivery Base</span>
+          <span id="er-base">—</span>
+        </div>
+        <div class="result-row result-row--total">
+          <span>Total Bill</span>
+          <span id="er-total">—</span>
+        </div>
+        <div class="result-row result-meta">
+          <span>Average Cost per kWh</span>
+          <span id="er-avg">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Fuel Mileage Calculator ───────────────────────── -->
+    <div class="panel" id="tab-fuel">
+      <div class="form-grid">
+        <div class="row-2">
+          <div class="field">
+            <label for="mpg1">Vehicle 1 MPG</label>
+            <div class="input-suffix">
+              <input type="number" id="mpg1" placeholder="25" step="0.1" min="0.1" />
+              <span>mpg</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="mpg2">Vehicle 2 MPG</label>
+            <div class="input-suffix">
+              <input type="number" id="mpg2" placeholder="35" step="0.1" min="0.1" />
+              <span>mpg</span>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="milesPerYear">Miles per Year</label>
+          <div class="input-suffix">
+            <input type="number" id="milesPerYear" placeholder="15,000" step="100" min="0" />
+            <span>mi/yr</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="fuelTables" class="fuel-tables" style="display:none">
+        <!-- Annual Cost Table -->
+        <div class="fuel-table-wrap">
+          <div class="fuel-table-title">Annual Fuel Cost</div>
+          <table class="fuel-table">
+            <thead>
+              <tr>
+                <th>Price / gal</th>
+                <th id="fuelHead1">Veh 1</th>
+                <th id="fuelHead2">Veh 2</th>
+              </tr>
+            </thead>
+            <tbody id="fuelCostBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Savings Table -->
+        <div class="fuel-table-wrap">
+          <div class="fuel-table-title">Annual Savings <span id="fuelSavingsDir" class="fuel-savings-dir"></span></div>
+          <table class="fuel-table">
+            <thead>
+              <tr>
+                <th>Price / gal</th>
+                <th>Savings</th>
+                <th>Over 5 yrs</th>
+                <th>Over 10 yrs</th>
+              </tr>
+            </thead>
+            <tbody id="fuelSavingsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="fuelEmpty" class="fuel-empty">Enter both MPG values and miles per year to see the table.</div>
+    </div>
+
+    <!-- ── Loan Calculator ────────────────────────────────── -->
+    <div class="panel" id="tab-loan">
+      <div class="form-grid">
+
+        <div class="row-2">
+          <div class="field">
+            <label for="loanPrice">Purchase Price</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input type="number" id="loanPrice" placeholder="35,000" min="0" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="loanDown">Down Payment <span class="label-optional">(optional)</span></label>
+            <div class="input-toggle-row">
+              <div class="input-prefix">
+                <span id="loanDownSymbol">$</span>
+                <input type="number" id="loanDown" placeholder="0" min="0" />
+              </div>
+              <div class="toggle-group" id="loanDownToggle">
+                <button class="toggle-btn toggle-btn--active" data-mode="dollar">$</button>
+                <button class="toggle-btn" data-mode="percent">%</button>
+              </div>
+            </div>
+            <div class="field-hint" id="loanDownHint"></div>
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="field">
+            <label for="loanTermVal">Loan Term</label>
+            <div class="input-toggle-row">
+              <div class="input-suffix" style="flex:1">
+                <input type="number" id="loanTermVal" value="60" min="1" />
+                <span id="loanTermUnit">months</span>
+              </div>
+              <div class="toggle-group" id="loanTermToggle">
+                <button class="toggle-btn toggle-btn--active" data-mode="months">mo</button>
+                <button class="toggle-btn" data-mode="years">yr</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="loanRate">Interest Rate (APR)</label>
+            <div class="input-suffix">
+              <input type="number" id="loanRate" placeholder="7.5" step="0.01" min="0" />
+              <span>%</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Loan Results -->
+      <div class="results">
+        <div class="result-row result-row--total">
+          <span>Monthly Payment</span>
+          <span id="lr-monthly">—</span>
+        </div>
+        <div class="result-row result-meta">
+          <span>Loan Amount</span>
+          <span id="lr-loan">—</span>
+        </div>
+        <div class="result-row result-meta">
+          <span>Total Amount Paid</span>
+          <span id="lr-total">—</span>
+        </div>
+        <div class="result-row result-meta">
+          <span>Total Interest Paid</span>
+          <span id="lr-interest">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Pay Calculator ────────────────────────────────── -->
+    <div class="panel" id="tab-pay">
+      <div class="form-grid">
+
+        <!-- Pay type toggle + amount -->
+        <div class="field">
+          <label>Pay Rate</label>
+          <div class="input-toggle-row">
+            <div class="input-prefix">
+              <span>$</span>
+              <input type="number" id="payAmount" placeholder="75,000" step="0.01" min="0" />
+            </div>
+            <div class="toggle-group" id="payTypeToggle">
+              <button class="toggle-btn toggle-btn--active" data-mode="annual">/ yr</button>
+              <button class="toggle-btn" data-mode="hourly">/ hr</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hours/week (only relevant for hourly) -->
+        <div class="field" id="payHoursField">
+          <label for="payHours">Hours per Week</label>
+          <div class="input-suffix">
+            <input type="number" id="payHours" value="40" step="0.5" min="1" />
+            <span>hrs</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="payTakeHome">Take Home Factor</label>
+          <div class="input-suffix">
+            <input type="number" id="payTakeHome" placeholder="71" step="0.1" min="0" max="100" />
+            <span>%</span>
+          </div>
+          <div class="field-hint">Percentage of gross pay you actually receive</div>
+        </div>
+
+      </div>
+
+      <!-- Pay Results -->
+      <div class="results" id="payResults" style="display:none">
+        <div class="pay-results-grid">
+
+          <div class="pay-col">
+            <div class="pay-col-head">Bi-Weekly <span class="pay-col-sub">26× / yr</span></div>
+            <div class="result-row">
+              <span>Gross</span>
+              <span id="pr-bw-gross">—</span>
+            </div>
+            <div class="result-row result-row--total" style="margin-top:4px">
+              <span>Net</span>
+              <span id="pr-bw-net">—</span>
+            </div>
+          </div>
+
+          <div class="pay-col">
+            <div class="pay-col-head">Semi-Monthly <span class="pay-col-sub">24× / yr</span></div>
+            <div class="result-row">
+              <span>Gross</span>
+              <span id="pr-sm-gross">—</span>
+            </div>
+            <div class="result-row result-row--total" style="margin-top:4px">
+              <span>Net</span>
+              <span id="pr-sm-net">—</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="result-row result-meta" style="margin-top:8px">
+          <span>Monthly Gross</span>
+          <span id="pr-mo-gross">—</span>
+        </div>
+        <div class="result-row result-meta">
+          <span>Monthly Net</span>
+          <span id="pr-mo-net">—</span>
+        </div>
+        <div class="result-row result-meta">
+          <span>Annual Gross</span>
+          <span id="pr-annual">—</span>
+        </div>
+        <div class="result-row result-meta">
+          <span>Annual Net</span>
+          <span id="pr-annual-net">—</span>
+        </div>
+      </div>
+
+      <!-- Bonus section -->
+      <div class="pay-bonus-wrap">
+        <div class="pay-section-head">Bonus</div>
+        <div class="form-grid" style="margin-top:12px">
+          <div class="row-2">
+            <div class="field">
+              <label for="bonusPct">Bonus</label>
+              <div class="input-toggle-row">
+                <div class="input-prefix">
+                  <span id="bonusSymbol">%</span>
+                  <input type="number" id="bonusPct" placeholder="10" step="0.1" min="0" />
+                </div>
+                <div class="toggle-group" id="bonusTypeToggle">
+                  <button class="toggle-btn toggle-btn--active" data-mode="percent">%</button>
+                  <button class="toggle-btn" data-mode="dollar">$</button>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label for="bonusTakeHome">Bonus Take Home Factor</label>
+              <div class="input-suffix">
+                <input type="number" id="bonusTakeHome" placeholder="60" step="0.1" min="0" max="100" />
+                <span>%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="results" id="bonusResults" style="display:none; margin-top:12px">
+          <div class="result-row">
+            <span>Gross Bonus</span>
+            <span id="br-gross">—</span>
+          </div>
+          <div class="result-row result-row--total">
+            <span>Net Bonus</span>
+            <span id="br-net">—</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Raise Calculator ──────────────────────────────── -->
+    <div class="panel" id="tab-raise">
+      <div class="form-grid">
+        <div class="row-2">
+          <div class="field">
+            <label for="raiseSalary">Base Salary</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input type="number" id="raiseSalary" placeholder="75,000" min="0" step="100" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="raisePct">Raise</label>
+            <div class="input-suffix">
+              <input type="number" id="raisePct" placeholder="5" step="0.1" min="0" />
+              <span>%</span>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="raiseTakeHome">Take Home Factor</label>
+          <div class="input-suffix">
+            <input type="number" id="raiseTakeHome" placeholder="71" step="0.1" min="0" max="100" />
+            <span>%</span>
+          </div>
+          <div class="field-hint">Percentage of gross pay you actually receive</div>
+        </div>
+      </div>
+
+      <!-- Immediate raise results -->
+      <div class="results" id="raiseResults" style="display:none">
+        <div class="result-row result-meta">
+          <span>New Annual Salary</span>
+          <span id="rr-salary">—</span>
+        </div>
+        <div class="result-row result-meta">
+          <span>Annual Increase</span>
+          <span id="rr-increase">—</span>
+        </div>
+        <div class="pay-results-grid" style="margin-top:10px">
+          <div class="pay-col">
+            <div class="pay-col-head">Semi-Monthly <span class="pay-col-sub">24× / yr</span></div>
+            <div class="result-row"><span>Gross</span><span id="rr-sm-gross">—</span></div>
+            <div class="result-row result-row--total" style="margin-top:4px">
+              <span>Net</span><span id="rr-sm-net">—</span>
+            </div>
+          </div>
+          <div class="pay-col">
+            <div class="pay-col-head">Monthly <span class="pay-col-sub">12× / yr</span></div>
+            <div class="result-row"><span>Gross</span><span id="rr-mo-gross">—</span></div>
+            <div class="result-row result-row--total" style="margin-top:4px">
+              <span>Net</span><span id="rr-mo-net">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10-year projection -->
+      <div class="pay-bonus-wrap">
+        <div class="pay-section-head">10-Year Projection</div>
+        <div class="form-grid" style="margin-top:12px">
+          <div class="field">
+            <label for="avgRaisePct">Average Annual Raise</label>
+            <div class="input-suffix">
+              <input type="number" id="avgRaisePct" placeholder="3" step="0.1" min="0" />
+              <span>%</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="raiseTable" style="display:none; margin-top:14px">
+          <table class="fuel-table">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Annual Salary</th>
+                <th>Semi-Mo Net</th>
+                <th>Monthly Net</th>
+              </tr>
+            </thead>
+            <tbody id="raiseTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    const display = document.getElementById('result');
-    const expression = document.getElementById('expression');
-
-    let current = '0';
-    let previous = '';
-    let operator = null;
-    let freshInput = false;
-
-    function updateDisplay() {
-      display.textContent = current;
-    }
-
-    document.querySelector('.keypad').addEventListener('click', (e) => {
-      const btn = e.target.closest('.btn');
-      if (!btn) return;
-      const action = btn.dataset.action;
-      const value = btn.dataset.value;
-
-      if (action === 'number') {
-        if (freshInput) { current = value; freshInput = false; }
-        else current = current === '0' ? value : current + value;
-      } else if (action === 'decimal') {
-        if (freshInput) { current = '0.'; freshInput = false; }
-        else if (!current.includes('.')) current += '.';
-      } else if (action === 'operator') {
-        if (operator && !freshInput) calculate();
-        previous = current;
-        operator = value;
-        expression.textContent = `${previous} ${btn.textContent}`;
-        freshInput = true;
-      } else if (action === 'equals') {
-        if (!operator) return;
-        expression.textContent = `${previous} ${operator} ${current} =`;
-        calculate();
-        operator = null;
-      } else if (action === 'clear') {
-        current = '0'; previous = ''; operator = null; freshInput = false;
-        expression.textContent = '';
-      } else if (action === 'sign') {
-        current = String(parseFloat(current) * -1);
-      } else if (action === 'percent') {
-        current = String(parseFloat(current) / 100);
-      }
-
-      updateDisplay();
+    // ── Tab switching ──────────────────────────────────────────
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('panel--active'));
+        tab.classList.add('tab--active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.add('panel--active');
+      });
     });
 
-    function calculate() {
-      const a = parseFloat(previous);
-      const b = parseFloat(current);
-      const ops = { '+': a + b, '-': a - b, '*': a * b, '/': a / b };
-      current = String(ops[operator] ?? b);
-      freshInput = true;
+    // ── Generic toggle setup ───────────────────────────────────
+    const modes = {
+      downToggle: 'dollar', taxToggle: 'dollar', insToggle: 'dollar',
+      loanDownToggle: 'dollar', loanTermToggle: 'months'
+    };
+
+    function setupToggle(groupId, onchange) {
+      document.getElementById(groupId).addEventListener('click', e => {
+        const btn = e.target.closest('.toggle-btn');
+        if (!btn) return;
+        document.getElementById(groupId)
+          .querySelectorAll('.toggle-btn')
+          .forEach(b => b.classList.remove('toggle-btn--active'));
+        btn.classList.add('toggle-btn--active');
+        modes[groupId] = btn.dataset.mode;
+        onchange(btn.dataset.mode);
+      });
     }
+
+    // Mortgage toggles
+    setupToggle('downToggle', () => {
+      document.getElementById('downSymbol').textContent =
+        modes.downToggle === 'dollar' ? '$' : '%';
+      calcMortgage();
+    });
+    setupToggle('taxToggle', () => {
+      document.getElementById('taxSymbol').textContent =
+        modes.taxToggle === 'dollar' ? '$' : '%';
+      calcMortgage();
+    });
+    setupToggle('insToggle', () => {
+      document.getElementById('insSymbol').textContent =
+        modes.insToggle === 'dollar' ? '$' : '%';
+      calcMortgage();
+    });
+
+    // Loan toggles
+    setupToggle('loanDownToggle', () => {
+      document.getElementById('loanDownSymbol').textContent =
+        modes.loanDownToggle === 'dollar' ? '$' : '%';
+      calcLoan();
+    });
+    setupToggle('loanTermToggle', mode => {
+      document.getElementById('loanTermUnit').textContent = mode;
+      calcLoan();
+    });
+
+    // ── Formatters ─────────────────────────────────────────────
+    const fmt  = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmtK = n => '$' + n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+
+    // ── Mortgage calculation ───────────────────────────────────
+    function calcMortgage() {
+      const homePrice  = parseFloat(document.getElementById('homePrice').value)    || 0;
+      const downRaw    = parseFloat(document.getElementById('downPayment').value)   || 0;
+      const loanTerm   = parseFloat(document.getElementById('loanTerm').value)      || 30;
+      const annualRate = parseFloat(document.getElementById('interestRate').value)  || 0;
+      const taxRaw     = parseFloat(document.getElementById('taxes').value)         || 0;
+      const insRaw     = parseFloat(document.getElementById('insurance').value)     || 0;
+
+      const downAmt = modes.downToggle === 'dollar' ? downRaw : homePrice * (downRaw / 100);
+      const loanAmt = Math.max(homePrice - downAmt, 0);
+
+      const hint = document.getElementById('downHint');
+      if (homePrice > 0 && downAmt > 0) {
+        hint.textContent = modes.downToggle === 'dollar'
+          ? ((downAmt / homePrice) * 100).toFixed(1) + '% of home price'
+          : fmtK(downAmt) + ' down';
+      } else { hint.textContent = ''; }
+
+      let pi = 0;
+      if (loanAmt > 0 && annualRate > 0) {
+        const r = annualRate / 100 / 12;
+        const n = loanTerm * 12;
+        pi = loanAmt * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      } else if (loanAmt > 0) {
+        pi = loanAmt / (loanTerm * 12);
+      }
+
+      const taxMonthly = (modes.taxToggle === 'dollar' ? taxRaw : homePrice * (taxRaw / 100)) / 12;
+      const insMonthly = (modes.insToggle === 'dollar' ? insRaw : homePrice * (insRaw / 100)) / 12;
+      const total = pi + taxMonthly + insMonthly;
+      const totalInterest = (pi * loanTerm * 12) - loanAmt;
+
+      const clear = homePrice <= 0 || loanAmt <= 0;
+      document.getElementById('r-pi').textContent       = clear ? '—' : fmt(pi);
+      document.getElementById('r-tax').textContent      = clear ? '—' : fmt(taxMonthly);
+      document.getElementById('r-ins').textContent      = clear ? '—' : fmt(insMonthly);
+      document.getElementById('r-total').textContent    = clear ? '—' : fmt(total);
+      document.getElementById('r-loan').textContent     = clear ? '—' : fmtK(loanAmt);
+      document.getElementById('r-interest').textContent = clear ? '—' : fmtK(Math.max(totalInterest, 0));
+    }
+
+    // ── Loan calculation ───────────────────────────────────────
+    function calcLoan() {
+      const price    = parseFloat(document.getElementById('loanPrice').value)    || 0;
+      const downRaw  = parseFloat(document.getElementById('loanDown').value)     || 0;
+      const termVal  = parseFloat(document.getElementById('loanTermVal').value)  || 0;
+      const rate     = parseFloat(document.getElementById('loanRate').value)     || 0;
+
+      const downAmt  = modes.loanDownToggle === 'dollar' ? downRaw : price * (downRaw / 100);
+      const loanAmt  = Math.max(price - downAmt, 0);
+      const months   = modes.loanTermToggle === 'months' ? termVal : termVal * 12;
+
+      const hint = document.getElementById('loanDownHint');
+      if (price > 0 && downAmt > 0) {
+        hint.textContent = modes.loanDownToggle === 'dollar'
+          ? ((downAmt / price) * 100).toFixed(1) + '% of price'
+          : fmtK(downAmt) + ' down';
+      } else { hint.textContent = ''; }
+
+      let monthly = 0;
+      if (loanAmt > 0 && months > 0 && rate > 0) {
+        const r = rate / 100 / 12;
+        monthly = loanAmt * (r * Math.pow(1 + r, months)) / (Math.pow(1 + r, months) - 1);
+      } else if (loanAmt > 0 && months > 0) {
+        monthly = loanAmt / months;
+      }
+
+      const totalPaid     = monthly * months;
+      const totalInterest = totalPaid - loanAmt;
+      const clear = price <= 0 || loanAmt <= 0 || months <= 0;
+
+      document.getElementById('lr-monthly').textContent  = clear ? '—' : fmt(monthly);
+      document.getElementById('lr-loan').textContent     = clear ? '—' : fmtK(loanAmt);
+      document.getElementById('lr-total').textContent    = clear ? '—' : fmtK(totalPaid);
+      document.getElementById('lr-interest').textContent = clear ? '—' : fmtK(Math.max(totalInterest, 0));
+    }
+
+    // ── Electric calculation ───────────────────────────────────
+    function calcElectric() {
+      const kwh          = parseFloat(document.getElementById('kwh').value)          || 0;
+      const energyRate   = parseFloat(document.getElementById('energyRate').value)   || 0;
+      const deliveryRate = parseFloat(document.getElementById('deliveryRate').value) || 0;
+      const deliveryBase = parseFloat(document.getElementById('deliveryBase').value) || 0;
+
+      const energyCharge   = kwh * (energyRate   / 100);
+      const deliveryCharge = kwh * (deliveryRate / 100);
+      const total          = energyCharge + deliveryCharge + deliveryBase;
+      const avgPerKwh      = kwh > 0 ? total / kwh : 0;
+
+      const clear = kwh <= 0 && energyRate <= 0 && deliveryRate <= 0 && deliveryBase <= 0;
+
+      const fmtC = n => '$' + n.toFixed(4); // fine precision for per-kWh rates
+
+      document.getElementById('er-energy').textContent   = clear ? '—' : fmt(energyCharge);
+      document.getElementById('er-delivery').textContent = clear ? '—' : fmt(deliveryCharge);
+      document.getElementById('er-base').textContent     = clear ? '—' : fmt(deliveryBase);
+      document.getElementById('er-total').textContent    = clear ? '—' : fmt(total);
+      document.getElementById('er-avg').textContent      = (clear || kwh <= 0) ? '—' : fmtC(avgPerKwh) + ' / kWh';
+    }
+
+    // ── Fuel calculation ───────────────────────────────────────
+    function calcFuel() {
+      const mpg1  = parseFloat(document.getElementById('mpg1').value)         || 0;
+      const mpg2  = parseFloat(document.getElementById('mpg2').value)         || 0;
+      const miles = parseFloat(document.getElementById('milesPerYear').value) || 0;
+
+      const ready = mpg1 > 0 && mpg2 > 0 && miles > 0;
+      document.getElementById('fuelTables').style.display = ready ? '' : 'none';
+      document.getElementById('fuelEmpty').style.display  = ready ? 'none' : '';
+      if (!ready) return;
+
+      // Label headers with the actual MPG values
+      document.getElementById('fuelHead1').textContent = mpg1 + ' mpg';
+      document.getElementById('fuelHead2').textContent = mpg2 + ' mpg';
+
+      // Higher MPG saves money — label which direction savings go
+      const betterMpg = mpg1 > mpg2 ? 1 : 2;
+      document.getElementById('fuelSavingsDir').textContent =
+        '(Veh ' + betterMpg + ' vs Veh ' + (betterMpg === 1 ? 2 : 1) + ')';
+
+      const prices = [];
+      for (let p = 2.00; p <= 6.001; p += 0.50) prices.push(Math.round(p * 100) / 100);
+
+      const fmtD = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      const costBody    = document.getElementById('fuelCostBody');
+      const savingsBody = document.getElementById('fuelSavingsBody');
+      costBody.innerHTML = '';
+      savingsBody.innerHTML = '';
+
+      prices.forEach(price => {
+        const cost1   = (miles / mpg1) * price;
+        const cost2   = (miles / mpg2) * price;
+        const savings = Math.abs(cost1 - cost2);
+        const cheaper = cost1 < cost2 ? 'fuel-cell--better' : (cost2 < cost1 ? 'fuel-cell--worse' : '');
+
+        // Cost row
+        const cr = document.createElement('tr');
+        cr.innerHTML = `
+          <td>${fmtD(price)}</td>
+          <td class="${cost1 <= cost2 ? 'fuel-cell--better' : ''}">${fmtD(cost1)}</td>
+          <td class="${cost2 <= cost1 ? 'fuel-cell--better' : ''}">${fmtD(cost2)}</td>`;
+        costBody.appendChild(cr);
+
+        // Savings row
+        const sr = document.createElement('tr');
+        sr.innerHTML = `
+          <td>${fmtD(price)}</td>
+          <td class="fuel-cell--savings">${fmtD(savings)}</td>
+          <td class="fuel-cell--savings">${fmtD(savings * 5)}</td>
+          <td class="fuel-cell--savings">${fmtD(savings * 10)}</td>`;
+        savingsBody.appendChild(sr);
+      });
+    }
+
+    // ── Wire up inputs ─────────────────────────────────────────
+    ['homePrice','downPayment','loanTerm','interestRate','taxes','insurance']
+      .forEach(id => document.getElementById(id).addEventListener('input', calcMortgage));
+
+    ['loanPrice','loanDown','loanTermVal','loanRate']
+      .forEach(id => document.getElementById(id).addEventListener('input', calcLoan));
+
+    ['kwh','energyRate','deliveryRate','deliveryBase']
+      .forEach(id => document.getElementById(id).addEventListener('input', calcElectric));
+
+    ['mpg1','mpg2','milesPerYear']
+      .forEach(id => document.getElementById(id).addEventListener('input', calcFuel));
+
+    // ── Pay type toggle ────────────────────────────────────────
+    const payModes = { payTypeToggle: 'annual', bonusTypeToggle: 'percent' };
+
+    setupToggle('payTypeToggle', mode => {
+      payModes.payTypeToggle = mode;
+      document.getElementById('payHoursField').style.display = mode === 'hourly' ? '' : 'none';
+      document.getElementById('payAmount').placeholder = mode === 'annual' ? '75,000' : '36.00';
+      calcPay();
+    });
+    setupToggle('bonusTypeToggle', mode => {
+      payModes.bonusTypeToggle = mode;
+      document.getElementById('bonusSymbol').textContent = mode === 'percent' ? '%' : '$';
+      calcPay();
+    });
+
+    // Hide hours field initially (annual mode default)
+    document.getElementById('payHoursField').style.display = 'none';
+
+    // ── Pay calculation ────────────────────────────────────────
+    function calcPay() {
+      const payAmt      = parseFloat(document.getElementById('payAmount').value)    || 0;
+      const hours       = parseFloat(document.getElementById('payHours').value)     || 40;
+      const takeHomePct = parseFloat(document.getElementById('payTakeHome').value)  || 0;
+      const bonusVal    = parseFloat(document.getElementById('bonusPct').value)     || 0;
+      const bonusTH     = parseFloat(document.getElementById('bonusTakeHome').value)|| 0;
+
+      const annualGross = payModes.payTypeToggle === 'annual'
+        ? payAmt
+        : payAmt * hours * 52;
+
+      const showPay = annualGross > 0 && takeHomePct > 0;
+      document.getElementById('payResults').style.display = showPay ? '' : 'none';
+
+      if (showPay) {
+        const factor    = takeHomePct / 100;
+        const bwGross   = annualGross / 26;
+        const bwNet     = bwGross * factor;
+        const smGross   = annualGross / 24;
+        const smNet     = smGross * factor;
+        const annualNet  = annualGross * factor;
+        const moGross    = annualGross / 12;
+        const moNet      = moGross * factor;
+
+        document.getElementById('pr-bw-gross').textContent   = fmt(bwGross);
+        document.getElementById('pr-bw-net').textContent     = fmt(bwNet);
+        document.getElementById('pr-sm-gross').textContent   = fmt(smGross);
+        document.getElementById('pr-sm-net').textContent     = fmt(smNet);
+        document.getElementById('pr-mo-gross').textContent   = fmt(moGross);
+        document.getElementById('pr-mo-net').textContent     = fmt(moNet);
+        document.getElementById('pr-annual').textContent     = fmtK(annualGross);
+        document.getElementById('pr-annual-net').textContent = fmtK(annualNet);
+      }
+
+      // Bonus
+      const grossBonus = payModes.bonusTypeToggle === 'percent'
+        ? annualGross * (bonusVal / 100)
+        : bonusVal;
+
+      const showBonus = grossBonus > 0 && bonusTH > 0;
+      document.getElementById('bonusResults').style.display = showBonus ? '' : 'none';
+
+      if (showBonus) {
+        document.getElementById('br-gross').textContent = fmt(grossBonus);
+        document.getElementById('br-net').textContent   = fmt(grossBonus * (bonusTH / 100));
+      }
+    }
+
+    ['payAmount','payHours','payTakeHome','bonusPct','bonusTakeHome']
+      .forEach(id => document.getElementById(id).addEventListener('input', calcPay));
+
+    // ── Raise calculation ──────────────────────────────────────
+    function calcRaise() {
+      const base       = parseFloat(document.getElementById('raiseSalary').value)  || 0;
+      const raisePct   = parseFloat(document.getElementById('raisePct').value)     || 0;
+      const thPct      = parseFloat(document.getElementById('raiseTakeHome').value)|| 0;
+      const avgRaisePct= parseFloat(document.getElementById('avgRaisePct').value)  || 0;
+
+      const newSalary  = base * (1 + raisePct / 100);
+      const increase   = newSalary - base;
+      const factor     = thPct / 100;
+      const showMain   = base > 0 && raisePct > 0 && thPct > 0;
+
+      document.getElementById('raiseResults').style.display = showMain ? '' : 'none';
+
+      if (showMain) {
+        document.getElementById('rr-salary').textContent   = fmtK(newSalary);
+        document.getElementById('rr-increase').textContent = fmtK(increase) + ' / yr';
+        document.getElementById('rr-sm-gross').textContent = fmt(newSalary / 24);
+        document.getElementById('rr-sm-net').textContent   = fmt((newSalary / 24) * factor);
+        document.getElementById('rr-mo-gross').textContent = fmt(newSalary / 12);
+        document.getElementById('rr-mo-net').textContent   = fmt((newSalary / 12) * factor);
+      }
+
+      const showTable = showMain && avgRaisePct > 0;
+      document.getElementById('raiseTable').style.display = showTable ? '' : 'none';
+
+      if (showTable) {
+        const tbody = document.getElementById('raiseTableBody');
+        tbody.innerHTML = '';
+        let salary = newSalary;
+        for (let yr = 1; yr <= 10; yr++) {
+          salary = salary * (1 + avgRaisePct / 100);
+          const smNet = (salary / 24) * factor;
+          const moNet = (salary / 12) * factor;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>Year ${yr}</td>
+            <td>${fmtK(salary)}</td>
+            <td class="fuel-cell--savings">${fmt(smNet)}</td>
+            <td class="fuel-cell--savings">${fmt(moNet)}</td>`;
+          tbody.appendChild(tr);
+        }
+      }
+    }
+
+    ['raiseSalary','raisePct','raiseTakeHome','avgRaisePct']
+      .forEach(id => document.getElementById(id).addEventListener('input', calcRaise));
   </script>
 </body>
 </html>
