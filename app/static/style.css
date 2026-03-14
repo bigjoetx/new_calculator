@@ -1,18 +1,18 @@
 /* ── Design tokens ────────────────────────────────────────── */
 :root {
-  --bg:          #3b3b3b;
-  --surface:     #454545;
-  --surface-low: #3f3f3f;
-  --tab-bar:     #2e2e2e;
-  --input-bg:    #363636;
-  --border:      rgba(255,255,255,0.1);
-  --border-foc:  #a78c6e;
-  --accent:      #a78c6e;   /* warm clay — nods to Claude's orange */
-  --accent-dim:  #4f4635;   /* dark tint for total-row bg */
-  --text:        #e8e8e6;
-  --text-mid:    rgba(232,232,230,0.55);
-  --text-dim:    rgba(232,232,230,0.32);
-  --green:       #5fa87a;
+  --bg:          #eeede9;
+  --surface:     #faf9f7;
+  --surface-low: #f2f1ee;
+  --tab-bar:     #e2e1dc;
+  --input-bg:    #f3f2ef;
+  --border:      rgba(0,0,0,0.1);
+  --border-foc:  #b07848;
+  --accent:      #b07848;   /* warm clay */
+  --accent-dim:  rgba(176,120,72,0.12);
+  --text:        #1c1c1a;
+  --text-mid:    rgba(28,28,26,0.58);
+  --text-dim:    rgba(28,28,26,0.35);
+  --green:       #2a7a50;
 }
 
 /* ── Reset & base ─────────────────────────────────────────── */
@@ -70,7 +70,7 @@ body {
   background: var(--surface);
   border-radius: 0 0 16px 16px;
   padding: 24px 20px 20px;
-  box-shadow: 0 24px 48px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.06);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.06);
   min-width: 0;
   overflow: hidden;
 }
@@ -405,7 +405,7 @@ input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba%28232%2C232%2C230%2C0.35%29' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba%280%2C0%2C0%2C0.4%29' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center;
   transition: border-color 0.15s;
@@ -424,4 +424,4 @@ input[readonly] { opacity: 0.6; cursor: default; }
   color: var(--text);
   margin-bottom: 4px;
 }
-.result-row--owed span:last-child { color: #e07070; font-size: 1.1rem; }
+.result-row--owed span:last-child { color: #c03030; font-size: 1.1rem; }
