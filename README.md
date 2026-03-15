@@ -1,4 +1,5 @@
 New Calculator
+
 A lightweight, self-hosted calculator suite designed to run as a Docker container on your local network. Pull it up from any device on your network through a clean web UI — no installation, no accounts, no internet required.
 Features
 
